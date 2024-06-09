@@ -1,37 +1,26 @@
-import React, { useState, useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { fetchAdverts, fetchTags } from '../redux/advertsSlice';
 import { Link } from 'react-router-dom';
 import { MDBRow } from 'mdb-react-ui-kit';
 import AdvertItem from '../components/adverts/AdvertItem';
-import FilterForm from '../components/filter/FilterForm';
 import Loader from '../components/Loader';
 import Navbar from '../components/Navbar';
-import { getAdverts } from '../api/adverts';
 
 const AdvertsPage = () => {
-  const [adverts, setAdverts] = useState([]);
+  const dispatch = useDispatch();
+  const { adverts, tags, loading } = useSelector((state) => state.adverts);
   const [filter, setFilter] = useState('');
-  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const fetchAdverts = async () => {
-      try {
-        const data = await getAdverts();
-        setAdverts(data);
-        setLoading(false);
-      } catch (error) {
-        console.error('Error al obtener los anuncios:', error);
-        setLoading(false);
-      }
-    };
-
-    fetchAdverts();
-  }, []);
+    dispatch(fetchAdverts());
+    dispatch(fetchTags());
+  }, [dispatch]);
 
   const handleFilterChange = (e) => {
     setFilter(e.target.value);
   };
 
-  // Filtrar anuncios directamente en el render
   const filteredAdverts = adverts.filter((advert) =>
     advert.name.toLowerCase().includes(filter.toLowerCase())
   );

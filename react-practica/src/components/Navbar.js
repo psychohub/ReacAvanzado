@@ -17,7 +17,7 @@ import { routes } from './routes/links';
 import ConfirmationModal from '../components/ConfirmationModal';
 
 const Navbar = () => {
-  const { isAuthenticated, logout } = useAuth();
+  const { isAuthenticated, performLogout } = useAuth();
   const navigate = useNavigate();
   const [showNavNoToggler, setShowNavNoToggler] = useState(false);
   const [showConfirmation, setShowConfirmation] = useState(false);
@@ -31,7 +31,7 @@ const Navbar = () => {
     localStorage.removeItem('email');
     storage.remove('auth');
     removeAuthorizationHeader();
-    logout();
+    performLogout();
     navigate(routes.login);
     setShowConfirmation(false);
   };
@@ -62,7 +62,7 @@ const Navbar = () => {
         >
           <MDBIcon icon="bars" fas />
         </MDBNavbarToggler>
-        <MDBCollapse navbar show={showNavNoToggler}>
+        <MDBCollapse navbar show={showNavNoToggler.toString()}>
           <MDBNavbarNav className="ms-auto align-items-center">
             <MDBNavbarItem>
               <Link to={routes.adverts} className="nav-link mx-2">

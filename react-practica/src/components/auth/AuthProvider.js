@@ -1,57 +1,52 @@
-import React, { createContext, useContext, useState, useEffect } from 'react';
-import {
-  getCredentialsFromStorage,
-  setCredentialsInStorage,
-  clearCredentialsFromStorage,
-} from '../../utils/credentialsHelper';
+import React, { createContext, useContext, useEffect } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 import {
   setAuthorizationHeader,
   removeAuthorizationHeader,
 } from '../../api/api';
+import { login, logout } from '../../redux/userSlice';
 
 const AuthContext = createContext(null);
 
 export const AuthProvider = ({ children }) => {
-  const [credentials, setCredentials] = useState(getCredentialsFromStorage());
+  const dispatch = useDispatch();
+  const { isAuthenticated, user, status, error } = useSelector(
+    (state) => state.auth
+  );
 
   useEffect(() => {
-    const handleStorageChange = () => {
-      setCredentials(getCredentialsFromStorage());
-    };
-
-    window.addEventListener('storage', handleStorageChange);
-    return () => window.removeEventListener('storage', handleStorageChange);
-  }, []);
+    const token = localStorage.getItem('token');
+    if (token) {
+      dispatch(login({ token }));
+    }
+  }, [dispatch]);
 
   useEffect(() => {
-    if (credentials) {
-      setAuthorizationHeader(credentials.token);
+    if (user && user.token) {
+      setAuthorizationHeader(user.token);
     } else {
       removeAuthorizationHeader();
     }
-  }, [credentials]);
+  }, [user]);
 
-  const saveCredentials = (newCredentials, rememberMe) => {
-    setCredentials(newCredentials);
-    if (rememberMe) {
-      setCredentialsInStorage(newCredentials);
-    } else {
-      clearCredentialsFromStorage();
-    }
+  const performLogin = (credentials) => {
+    dispatch(login(credentials));
   };
 
-  const logout = () => {
-    setCredentials(null);
-    clearCredentialsFromStorage();
-  };
-
-  const isAuthenticated = () => {
-    return credentials !== null;
+  const performLogout = () => {
+    dispatch(logout());
   };
 
   return (
     <AuthContext.Provider
-      value={{ credentials, saveCredentials, logout, isAuthenticated }}
+      value={{
+        isAuthenticated,
+        user,
+        status,
+        error,
+        performLogin,
+        performLogout,
+      }}
     >
       {children}
     </AuthContext.Provider>

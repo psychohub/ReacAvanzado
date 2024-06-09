@@ -14,16 +14,6 @@ export const removeAuthorizationHeader = () => {
   delete api.defaults.headers.common['Authorization'];
 };
 
-api.interceptors.request.use((config) => {
-  const token = localStorage.getItem('token');
-  console.log('Token from localStorage:', token);
-  if (token) {
-    config.headers.Authorization = `Bearer ${token}`;
-    console.log('Authorization header set:', config.headers.Authorization);
-  }
-  return config;
-});
-
 export const getAdverts = async () => {
   try {
     const response = await api.get('api/v1/adverts');

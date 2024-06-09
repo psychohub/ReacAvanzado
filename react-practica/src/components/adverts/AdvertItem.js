@@ -30,9 +30,11 @@ const AdvertItem = ({ advert }) => {
             />
           )}
           <MDBCardText>
-            <div>Precio: {advert.price}</div>
-            <div>Tipo: {advert.sale ? 'Venta' : 'Compra'}</div>
-            <div>Tags: {advert.tags.join(', ')}</div>
+            <span>Precio: {advert.price}</span>
+            <br />
+            <span>Tipo: {advert.sale ? 'Venta' : 'Compra'}</span>
+            <br />
+            <span>Tags: {advert.tags.join(', ')}</span>
           </MDBCardText>
         </MDBCardBody>
       </MDBCard>

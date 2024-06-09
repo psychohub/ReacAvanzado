@@ -5,12 +5,18 @@ const ConfirmationModal = ({ message, onConfirm, onCancel }) => {
   return (
     <div className="modal-overlay">
       <div className="modal-content">
-        <p>{message}</p>
-        <div className="modal-buttons">
-          <button onClick={onConfirm}>Confirmar</button>
-          <button onClick={onCancel}>Cancelar</button>
+        <div className="modal-message-container">
+          <p className="modal-message">{message}</p>
         </div>
-      </div>
+        <div className="modal-buttons">
+          <button className="cancel" onClick={onCancel}>
+            Cancelar
+          </button>
+          <button className="confirm" onClick={onConfirm}>
+            Confirmar
+          </button>
+        </div>
+      </div>{' '}
     </div>
   );
 };
