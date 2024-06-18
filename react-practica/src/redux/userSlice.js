@@ -14,9 +14,11 @@ export const login = createAsyncThunk(
         }
         return accessToken;
       }
-      return rejectWithValue('No access token received');
+      return rejectWithValue(new Error('No access token received'));
     } catch (error) {
-      return rejectWithValue(error.response.data);
+      return rejectWithValue(
+        new Error(error.response?.data?.message || 'Login failed')
+      );
     }
   }
 );
@@ -41,6 +43,7 @@ const userSlice = createSlice({
     builder
       .addCase(login.pending, (state) => {
         state.status = 'loading';
+        state.error = null;
       })
       .addCase(login.fulfilled, (state, action) => {
         state.status = 'succeeded';
@@ -49,7 +52,7 @@ const userSlice = createSlice({
       })
       .addCase(login.rejected, (state, action) => {
         state.status = 'failed';
-        state.error = action.payload;
+        state.error = action.payload.message;
       });
   },
 });
