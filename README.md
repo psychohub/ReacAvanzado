@@ -67,11 +67,10 @@ Ejecución de la aplicación
 
 1.  Para iniciar la aplicación, ejecuta:
 
-```bash
-npm start
-  ```
- estará disponible en http://localhost:3000.
-    
+    ```bash
+    npm start
+    ```
+
 2.  Abre un navegador web y visita http://localhost:3000 para ver la aplicación en funcionamiento.
     
 
@@ -88,8 +87,69 @@ Configuración de Redux Dev Tools
 
 Se ha configurado Redux Dev Tools para simplificar las tareas de debugging de la aplicación. Puedes instalar la extensión de Redux DevTools en tu navegador:
 
- *   [Redux DevTools Extension para Chrome](https://chrome.google.com/webstore/detail/react-developer-tools/fmkadmapgofadopljbjfkapdkoienihi?hl=en)
- *   [Redux DevTools Extension para Firefox](https://addons.mozilla.org/en-US/firefox/addon/react-devtools/)
- *   Esto te permitirá inspeccionar y depurar el estado de tu aplicación Redux de manera efectiva.
+*   [Redux DevTools Extension para Chrome](https://chrome.google.com/webstore/detail/redux-devtools/lmhkpmbekcpmknklioeibfkpmmfibljd?hl=en)
+*   [Redux DevTools Extension para Firefox](https://addons.mozilla.org/en-US/firefox/addon/reduxdevtools/)
+*   Esto te permitirá inspeccionar y depurar el estado de tu aplicación Redux de manera efectiva.
+
+
+Tests
+-----
+
+Para garantizar la calidad y el correcto funcionamiento de la aplicación, se han implementado tests utilizando `Jest` y `React Testing Library`. Además, se ha configurado un middleware personalizado para capturar y verificar las acciones de Redux durante las pruebas.
+
+### Ejecución de Tests
+
+1.  Para ejecutar los tests, utiliza el siguiente comando:
+
+    ```bash
+    npm test
+    ```
+
+2.  Los tests están configurados para ejecutarse automáticamente y proporcionar un informe de los resultados.
+
+### Descripción de Tests
+
+- **advertsActions.test.js**: Verifica que las acciones de Redux relacionadas con los anuncios se despachan correctamente y que las acciones asincrónicas funcionan según lo esperado.
+- **Middleware de captura de acciones**: Un middleware personalizado (`actionCaptureMiddleware`) se utiliza para capturar las acciones despachadas durante las pruebas y verificar su correcta ejecución.
+
+### Ejemplo de Test
+
+A continuación se muestra un ejemplo de cómo se configuran y ejecutan los tests para las acciones de anuncios:
+
+```javascript
+import { configureStore } from '@reduxjs/toolkit';
+import advertsReducer, { fetchAdverts } from '../../redux/advertsSlice';
+import { getAdverts } from '../../api/adverts';
+import actionCaptureMiddleware, { getCapturedActions, clearCapturedActions } from '../../middlewares/actionCaptureMiddleware';
+
+jest.mock('../../api/adverts');
+
+describe('Adverts Actions', () => {
+  afterEach(() => {
+    clearCapturedActions();
+    jest.clearAllMocks();
+  });
+
+  it('should create an action to fetch adverts', async () => {
+    const adverts = [{ id: 1, name: 'Advert 1', price: 100 }];
+    getAdverts.mockResolvedValue(adverts);
+
+    const store = configureStore({
+      reducer: {
+        adverts: advertsReducer,
+      },
+      middleware: (getDefaultMiddleware) => getDefaultMiddleware().concat(actionCaptureMiddleware),
+    });
+
+    const expectedActions = [
+      { type: 'adverts/fetchAdverts/pending' },
+      { type: 'adverts/fetchAdverts/fulfilled', payload: adverts },
+    ];
+
+    await store.dispatch(fetchAdverts());
+    const capturedActions = getCapturedActions();
+    expect(capturedActions).toEqual(expectedActions);
+  });
+});
 
    
