@@ -1,0 +1,41 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`AdvertItem Debería renderizarse correctamente 1`] = `
+<div>
+  <div
+    class="col-md-4"
+  >
+    <div
+      class="card"
+    >
+      <div
+        class="card-body"
+      >
+        <h5
+          class="card-title"
+        >
+          Advert 1
+        </h5>
+        <p
+          class="card-text"
+        >
+          <span>
+            Precio: 
+            100
+          </span>
+          <br />
+          <span>
+            Tipo: 
+            Venta
+          </span>
+          <br />
+          <span>
+            Tags: 
+            tag1, tag2
+          </span>
+        </p>
+      </div>
+    </div>
+  </div>
+</div>
+`;

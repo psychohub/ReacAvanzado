@@ -32,6 +32,18 @@ export const createNewAdvert = createAsyncThunk(
   }
 );
 
+export const getFilteredAdverts = (state, filter) => {
+  return state.adverts.filter(advert => {
+    const matchesName = advert.name.toLowerCase().includes(filter.name.toLowerCase());
+    const matchesSale = filter.sale === 'todos' || advert.sale.toString() === filter.sale;
+    const matchesPrice = (filter.priceMin === '' || advert.price >= parseInt(filter.priceMin)) &&
+                         (filter.priceMax === '' || advert.price <= parseInt(filter.priceMax));
+    const matchesTags = filter.selectedTags.every(tag => advert.tags.includes(tag.value));
+    
+    return matchesName && matchesSale && matchesPrice && matchesTags;
+  });
+};
+
 export const removeAdvert = createAsyncThunk(
   'adverts/removeAdvert',
   async (id) => {
